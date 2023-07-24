@@ -1,8 +1,7 @@
 import pandas as pd
 
 from celery_.celery import app
-from celery_.tasks import hello
-from core.tasks import request_cap, request_price
+from core.tasks import request_cap, request_price, print_hello
 
 # STOCKS = pd.read_csv('../sp_500_stocks.csv')
 STOCKS = pd.read_csv("/home/bluetip/dev/pet/sandp_screener/sp_500_stocks.csv")
@@ -12,14 +11,11 @@ def request_quotes():
     my_columns = ["Ticker", "Stock Price", "Market Capitalization", "Number of Shares to Buy"]
     final_dataframe = pd.DataFrame(columns=my_columns)
 
-    for symbol in STOCKS["Ticker"][:1]:
+    for symbol in STOCKS["Ticker"][:4]:
         price = request_price.delay(symbol).get()
-        market_cap = request_cap.delay(symbol).get()
+        market_cap = request_cap.delay(symbol).get() / 1000000000000
 
-        print(f"price = {price}")
-        print(f"market_cap = {market_cap / 1000000000000}")
-
-        final_dataframe += pd.concat(
+        final_dataframe = pd.concat(
             [
                 final_dataframe,
                 pd.DataFrame(
@@ -30,10 +26,15 @@ def request_quotes():
                 ),
             ]
         )
-        print(f"final_dataframe = {final_dataframe}")
-    print(final_dataframe)
+    return final_dataframe
 
 
 if __name__ == "__main__":
     # app.start()
-    request_quotes()
+    result = request_quotes()
+    # for i in range(10):
+    #     result = print_hello.delay().get()
+    #     print(result)
+
+    print(f'final data = ')
+    print(f'{result}')
