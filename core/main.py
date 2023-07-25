@@ -1,6 +1,6 @@
 import pandas as pd
 
-from core.tasks import request_cap, request_price, print_hello
+from core.tasks import print_hello, request_cap, request_price
 
 # STOCKS = pd.read_csv('../sp_500_stocks.csv')
 STOCKS = pd.read_csv("/home/bluetip/dev/pet/sandp_screener/sp_500_stocks.csv")
@@ -14,7 +14,12 @@ def request_quotes():
         price = request_price.delay(symbol).get()
         market_cap = request_cap.delay(symbol).get() / 1000000000000
 
-        df = pd.DataFrame([[symbol, price, market_cap, "N/A"], ], columns=my_columns,)
+        df = pd.DataFrame(
+            [
+                [symbol, price, market_cap, "N/A"],
+            ],
+            columns=my_columns,
+        )
 
         final_dataframe = pd.concat(
             [
@@ -34,5 +39,5 @@ if __name__ == "__main__":
     #     result = print_hello.delay().get()
     #     print(result)
 
-    print(f'final data = ')
-    print(f'{result}')
+    print(f"final data = ")
+    print(f"{result}")
