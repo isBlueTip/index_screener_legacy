@@ -20,7 +20,8 @@ def print_hello() -> str:
     return "hello world"
 
 
-@app.task(rate_limit="2/m")
+# @app.task(rate_limit="2/m")
+@app.task(autoretry_for=(TypeError,), retry_kwargs={"max_retries": 7, "countdown": 10})
 def request_price(symbol: str) -> float:
     quote_url = get_quote_url(symbol)
 
@@ -34,11 +35,13 @@ def request_price(symbol: str) -> float:
     return price
 
 
-@app.task(rate_limit="2/m")
+# @app.task(rate_limit="2/m")
+@app.task(autoretry_for=(TypeError,), retry_kwargs={"max_retries": 7, "countdown": 10})
 def request_cap(symbol: str) -> float:
     company_overview_url = get_company_overview_url(symbol)
 
     data_cap = requests.get(company_overview_url).json()
+
     print(f"cap data = {data_cap}")
     print(f"\n")
 
