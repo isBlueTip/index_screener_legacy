@@ -7,10 +7,10 @@ S&P 500 screener
 celery -A core.main worker -l info
 ```
 
-will start celery worker, where:
--A, --app   APPLICATION
-worker      Start worker instance
--l info     level of information output
+will start celery worker, where:  
+-A, --app   APPLICATION  
+worker      Start worker instance  
+-l info     level of information output  
 
 
 2. In another terminal:
